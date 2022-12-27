@@ -15,6 +15,50 @@ $(document).ready(function(){
     })
 })
 
+//menu pop-up open/close
+$('.right_sideber_menu i.icofont-navigation-menu').on('click', function () {
+    $('.right_popupmenu_area .right_sideber_menu_inner').addClass('tx-s-open')
+})
+$('.right_sideber_menu i.icofont-close-line-squared').on('click', function () {
+    $('.right_popupmenu_area .right_sideber_menu_inner').removeClass('tx-s-open')
+})
+//mobile
+$('.mobile_menu_o i.icofont-navigation-menu').on('click', function () {
+    $('.mobile_p').addClass('tx-s-open')
+})
+
+$('.mobile_menu_o i.icofont-close').on('click', function () {
+    $('.mobile_p').removeClass('tx-s-open')
+})
+
+// scroll menu hide/show
+let menu = $('.akin-main-menu')
+$(window).scroll(function (){
+    if ($(window).scrollTop() > 80){
+        menu.addClass('bg-menu-black')
+    }else {
+        menu.removeClass('bg-menu-black')
+    }
+})
+
+//menu / submenu +
+// const isMobile = navigator.userAgentData.mobile
+// console.log( navigator.userAgentData.mobile)
+if (window.screen.width < 992) {
+    let subLink = ' <a class="mean-expand" href="#" style="font-size: 18px"></a>'
+    $('.sub-menu').after(subLink)
+
+    $('.mean-expand').on('click', function (){
+        $(this).prev().toggle('500')
+        $(this).toggleClass('active')
+    })
+    $('.mean-expand.active').html('-')
+}
+if (window.screen.width < 768){
+    $('.top-right-menu .social-icons').removeClass('text-right')
+}
+
+
 //cases - list
 
 var galleryTop = new Swiper('.gallery-top', {
@@ -345,19 +389,48 @@ function onResize() {
 window.onload = init;
 window.addEventListener("resize", onResize);
 
-$(document).ready(function() {
-    let inputMinMax = $('.info-range-input');
-    let minus = $('.range-input .minus');
-    minus.on('click', function() {
-        console.log( inputMinMax.val())
-    })
-    $('.plus').click(function () {
-        var $input = $(this).parent().find('input');
-        $input.val(parseInt($input.val()) + .1);
-        $input.change();
-        return false;
-    });
-});
+(function() {
+
+    window.inputNumber = function(el) {
+
+        var min = el.attr('min') || false;
+        var max = el.attr('max') || false;
+
+        var els = {};
+
+        els.dec = el.prev();
+        els.inc = el.next();
+
+        el.each(function() {
+            init($(this));
+        });
+
+        function init(el) {
+
+            els.dec.on('click', decrement);
+            els.inc.on('click', increment);
+
+            function decrement() {
+                var value = el[0].value;
+                value-= 0.1;
+                value.toFixed(1)
+                if(!min || value >= min) {
+                    el[0].value = value;
+                }
+            }
+
+            function increment() {
+                var value = el[0].value;
+                value++;
+                if(!max || value <= max) {
+                    el[0].value = value++;
+                }
+            }
+        }
+    }
+})();
+
+inputNumber($('.input-number'));
 
 // image gallery
 // init the state from the input
@@ -380,5 +453,24 @@ $(".image-checkbox").on("click", function (e) {
 });
 
 // calculator-end
+
+// number inc
+const counters = document.querySelectorAll(".counter");
+
+counters.forEach((counter) => {
+    counter.innerText = "0";
+    const updateCounter = () => {
+        const target = +counter.getAttribute("data-target");
+        const count = +counter.innerText;
+        const increment = target / 200;
+        if (count < target) {
+            counter.innerText = `${Math.ceil(count + increment)}`;
+            setTimeout(updateCounter, 1);
+        } else counter.innerText = target;
+    };
+    updateCounter();
+});
+
+// number inc end
 
 
